@@ -44,7 +44,9 @@ int main(int argc, char * argv[], char *envp[]){
 
 void child_handler(int signo){
     int status;
-    wait(&status);
-    printf("Program ended within time!\n");
-    exit(0);
+    waitpid(-1,&status,WNOHANG);
+    if(WIFEXITED(status)){
+        printf("Program ended within time!\n");
+        exit(0);
+    }
 }
