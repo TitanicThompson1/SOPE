@@ -21,8 +21,6 @@ struct p2
 
 };
 
-void exit_routine();
-
 int main(void){
 
     mkfifo("/tmp/fifo_req", 0660);
@@ -41,6 +39,8 @@ int main(void){
     }
 
     int n1, n2;
+
+    sscanf(line, "%d %d", &n1, &n2);
 
     while (n1 != 0 || n2 != 0){
 

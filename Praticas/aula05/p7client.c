@@ -44,6 +44,7 @@ int main(void){
         print_result(res);
 
     }
+    close(fdW); close(fdR);
     exit(0);
 }
 
