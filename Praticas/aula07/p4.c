@@ -19,8 +19,8 @@ int npos;
 pthread_mutex_t mut = PTHREAD_MUTEX_INITIALIZER;
 int pos=0, val=0;
 
-char *SHM_NAME = "/shm1";
-char *SEM_NAME = "/sem1";
+char SHM_NAME[] = "/shm1";
+char SEM_NAME[] = "/sem1";
 
 
 // mutex p/a sec.critica
@@ -79,14 +79,15 @@ int main(int argc, char *argv[])
 
     //Shared Memmory Criation
     
-    int shmfd = shm_open(SHM_NAME, O_CREAT | O_RDONLY, 0600);
+    int shmfd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0644);
     if(shmfd < 0){
         perror("shm_open");
         exit(2);
     }
 
-    if (ftruncate(shmfd, npos*sizeof(int)) < 0)   {     
-        perror("WRITER failure in ftruncate()");    
+    if (ftruncate(shmfd, npos*sizeof(int)) < 0)   {  
+        shm_unlink(SHM_NAME);   
+        perror("ftruncate()");    
         exit(2);   
     }
 
@@ -96,8 +97,7 @@ int main(int argc, char *argv[])
     
     //Fill threads
     for (k=0; k<nthr; k++) {
-        
-        if((pids[k] =fork()) == 0){
+        if((pids[k] = fork()) == 0){
             return fill(shmfd, sem);
         }
     }
